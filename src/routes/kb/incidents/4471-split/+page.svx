@@ -20,8 +20,9 @@ their own. Each problem has its own ticket.
 
 <Callout kind="warn">
 
-The fix queued for #4471 fixes only the `parser` problem. After it ships, the `hint` and
-`one-day` reports still come in.
+Engineering update, 5 October: #4471 is closed. `parser` is fixed
+(`fix(dates): parse dd/mm for eu locales`). `hint` is won't fix: the booking-v3 form is retired.
+The update does not cover `one-day`. That ticket stays open.
 
 </Callout>
 
@@ -54,10 +55,11 @@ The fix queued for #4471 fixes only the `parser` problem. After it ships, the `h
 
 ## What each fix needs
 
-- `parser`: read each date in the order of the tenant's locale. This is the fix queued for #4471.
-- `hint`: make booking-v3 print the hint in the tenant's order, or read the typed date in the
-  order the hint shows.
-- `one-day`: find where a date crosses a time zone (invites, reminders, calendar sync) and keep
-  the date in the zone of the booking.
+- `parser`: read each date in the order of the tenant's locale. Done:
+  `fix(dates): parse dd/mm for eu locales`.
+- `hint`: none. The booking-v3 form is retired, so its `MM/DD/YYYY` hint reaches nobody.
+- `one-day`: still needed. Find where a date crosses a time zone (invites, reminders, calendar
+  sync) and keep the date in the zone of the booking. The dd/mm fix cannot stop a date that moves
+  by one day.
 
 <RenderStamp {signature} />

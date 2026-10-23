@@ -1,8 +1,8 @@
 {
   "repo": "iceener/support-kb-4471",
   "tickets": {
-    "parser": { "number": 1, "state": "open" },
-    "hint": { "number": 2, "state": "open" },
+    "parser": { "number": 1, "state": "closed", "reason": "fixed" },
+    "hint": { "number": 2, "state": "closed", "reason": "won't fix" },
     "one-day": { "number": 3, "state": "open" }
   }
 }
