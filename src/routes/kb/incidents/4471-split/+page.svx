@@ -1,0 +1,63 @@
+---
+layout: runbook
+title: '#4471 split into the problems it holds'
+owner: iceener
+status: open
+reviewed: 2026-10-23
+signature: v1.eyJzdWIiOiIzMiIsImF1ZCI6ImNoYWxsZW5nZTp3aGF0LWl0LXNob3dzIiwiaWF0IjoxNzkyNzc5MTE1LCJleHAiOjE3OTI4NjU1MTV9.4zqxGQ3BwC8-qKbs1qearEuDLcbrc0g5G0v7YwnoEIc
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import ProblemReports from '#lib/kb/ProblemReports.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+The [#4471 page](/kb/incidents/4471) says the ticket is one issue with one fix queued. Its own
+table shows more than one cause. This page splits #4471 into the problems that need a fix of
+their own. Each problem has its own ticket.
+
+<Callout kind="warn">
+
+The fix queued for #4471 fixes only the `parser` problem. After it ships, the `hint` and
+`one-day` reports still come in.
+
+</Callout>
+
+## The problems
+
+<ProblemTable ticket={4471} />
+
+- **`parser`**: the shared parser reads every date month first. Our tenants write the day
+  first, so the day and the month flip: 7 April becomes 4 July. These reports come in through
+  the app, by email, and through the booking-v2 form.
+- **`hint`**: the booking-v3 form prints `MM/DD/YYYY` under its date field. People type the
+  month first, as the hint tells them, and the form reads the date the tenant's way, day first.
+  Only form reports from booking-v3 tenants. The parser fix does not change this.
+- **`one-day`**: the date moves by one day, not by months: 12 May shows as Monday 11 May. A
+  month-first parser cannot do that. The reports point at time zones: a client in Lisbon and a
+  client in Toronto got different days for the same meeting. The desk marked these reports in
+  its notes. The #4471 table still counts them under `parser`, because it sorts by tenant only.
+
+## How the reports were counted
+
+1. One report per id. The export's pages overlap, so some reports come twice.
+2. The cause comes from the tenant: its locale and its booking form (`causes.ts`). The intake
+   tag is a guess from the reporter's browser, and it is often wrong.
+3. Reports the desk read as a one-day move (`desk-notes.json`) are a problem of their own. Their
+   texts are below.
+
+## The one-day moves
+
+<ProblemReports ticket={4471} problem="one-day" />
+
+## What each fix needs
+
+- `parser`: read each date in the order of the tenant's locale. This is the fix queued for #4471.
+- `hint`: make booking-v3 print the hint in the tenant's order, or read the typed date in the
+  order the hint shows.
+- `one-day`: find where a date crosses a time zone (invites, reminders, calendar sync) and keep
+  the date in the zone of the booking.
+
+<RenderStamp {signature} />
